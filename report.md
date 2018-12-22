@@ -44,11 +44,11 @@ During this task, we modified the configuration of the docker images in order to
 
 #### Problem with the current solution : 
 
-
+TODO
 
 #### Give an explanation on how `Serf` is working. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
 
-
+TODO
 
 ## Task 3 : React to membership changes
 
