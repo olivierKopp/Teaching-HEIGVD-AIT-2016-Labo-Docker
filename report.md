@@ -1,12 +1,32 @@
 # Lab 04 - Docker - Kopp Olivier, Piller Florent
 
+## Table of content 
+
+1. [Introduction](#Introduction)
+2. [Identify issues and install the tools](#Task 0 : Identify issues and install the tools)
+3. [Add a process supervisor to run several processes](#Task 1 : Add a process supervisor to run several processes)
+4. [Add a tool to manage membership in the web server cluster](#Task 2 : Add a tool to manage membership in the web server cluster)
+5. [React to membership changes](#Task 3 : React to membership changes)
+6. [Use a template engine to easily generate configuration files](#Task 4 : Use a template engine to easily generate configuration files)
+7. [Generate a new load balancer configuration when membership changes](#Task 5 : Generate a new load balancer configuration when membership changes)
+8. [Make the load balancer automatically reload the new configuration](#Task 6 : Make the load balancer automatically reload the new configuration)
+9. [Conclusion](#Conclusion)
+
+## Introduction 
+
+In this lab, we will try to improve the infrastructure of the load balancer that we began in the last one. The main goal is to provide a way to add new servers more dynamically and to have a better resistance to crashes. We will use tools such as Docker, S6, and Serf.
+
 ## Task 0 : Identify issues and install the tools 
 
-### M1
+### M1 : 
 
-This infrastructure can't be deployed on production. The main reasons for this is that it' pretty weak against crashes. If one of the server crash and we have to relaunch it, we also have to relaunch the HAproxy which cause an indisponibility of the web app. The same process need to be done if we want to add another server.
+##### Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?
 
-### M2
+This infrastructure can't be deployed on production. The main reasons for this is that it's pretty weak against crashes. If one of the server crash and we have to relaunch it, we also have to relaunch the HAproxy which cause an unavailability of the web app. The same process need to be done if we want to add another server.
+
+### M2 : 
+
+##### Describe what you need to do to add new `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
 In order to add another webapp container, we have to build it (with the same files as the two previous containers), to modify the haproxy config file (adding the third server to the load balancing configuration)  and the run.sh script (adding the line `sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg`). 
 
@@ -14,23 +34,35 @@ Next to that, we have to rebuild the haproxy image, and to run it with `docker r
 
 We can also modify the provision script to allows restart of the systems (adding a remove of the third webapp container and modifying the run command by the one we executed just before).
 
-### M3
+### M3 :  
+
+##### Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.
 
 A better approach would be to detect changes on runtime and to be able to add node to the haproxy without having to relaunch to whole infrastructure each time.
 
-### M4
+### M4 : 
 
-It should be possible to add or remove the nodes dynamically, without knowing their names or addresses. One solutions is to create a cluster where all nodes communicate, which will allow the haproxy which node are actives at any times.
+##### You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?
 
-### M5
+It should be possible to add or remove the nodes dynamically, without knowing their names or addresses. One solutions is to create a cluster where all nodes communicate, which will allow the haproxy to know which node are actives at any times.
 
-The basic use of docker container doesn't allows the execution of multiple process, once the main process stops, the container is killed. What we need to achieve that is another abstract layer such as a process supervisor, which will always running and will launch and monitor other processes.
+### M5 : 
 
-### M6
+##### In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks. 
+
+##### Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
+
+The basic use of docker container doesn't allows the execution of multiple process, once the main process stops, the container is killed. What we need to achieve is to have another abstract layer such as a process supervisor, which will always be running and will launch and monitor other processes.
+
+### M6 : 
+
+##### In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
+
+##### What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?
 
 If we add other nodes, we will also have to add them in the haproxy configuration file. This is not dynamic. A solution to this problem would be to run a script at each change in the network, which will do modification of the different configuration files.
 
-Stats page : 
+##### Stats page : 
 
 ![](./images/T0_stats_page.PNG)
 
@@ -44,15 +76,15 @@ Stats page at the end of the manipulations :
 
 We didn't have particular difficulties in this task.
 
-During this task, we modified the configuration of the docker images in order to installed a process supervisor which will allow us to run multiple process within the same container easily. The process supervisor will help us to manage the processes inside the docker containers. For example, if a web application crashes, it can restart it for us.
+During this task, we modified the configuration of the docker images in order to install a process supervisor which will allow us to run multiple process within the same container easily. The process supervisor will help us to manage the processes inside the docker containers. For example, if a web application crashes, it can restart it for us.
 
 ## Task 2 : Add a tool to manage membership in the web server cluster
 
 #### Provide the docker log output for each of the containers: `ha`,`s1` and `s2`. 
 
-- [HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_HA.txt)
-- [S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S1.txt)
-- [S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S2.txt)
+- [HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_HA.txt)
+- [S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S1.txt)
+- [S2 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S2.txt)
 
 
 
@@ -111,7 +143,7 @@ The goal of the squashing is to reduce the size and the number of the layers in 
 The flattening is use on docker container instead of docker image, it aims to reduce the size of the container by deleting the history of it. src : https://tuhrig.de/flatten-a-docker-container-or-image/
 
 #### Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.
-We can create a base image which contain every shared dependencies that our backend and haproxy need (i.e : basic tools, serf, node...) and make the dockerfile of HA and servers inherit from it.
+We can create a base image which contain every shared dependencies that our backend and haproxy need (i.e : basic tools, serf, S6...) and make the dockerfile of HA and servers inherit from it.
 
 #### Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
 
@@ -128,7 +160,7 @@ We can create a base image which contain every shared dependencies that our back
 
 #### Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
 
-The file contains the name and ip of the last member that has joined the cluster. TODO problems.
+The file contains the name and ip of the last member that has joined the cluster. 
 
 ## Task 5 : Generate a new load balancer configuration when membership changes
 
@@ -162,13 +194,46 @@ The file contains the name and ip of the last member that has joined the cluster
 
 ## Task 6 : Make the load balancer automatically reload the new configuration
 
+#### Experimentation : 
 
+1. We launch the HAProxy : 
 
+   [Docker ps step1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step1.log)
 
+   Stats page :
 
+   ![stats_page_step1](./logs/task6/stats_step1.PNG)
 
+2.  We launch two backend servers named S1 and S2 : 
 
+   [Docker ps step2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step2.log)
 
+   Stats page :
 
+   ![stats_page_step2](./logs/task6/stats_step2.PNG)
 
-#### Pedagogical objectives
+3. We launch three other server named S3, S4 and S5 : 
+
+   [Docker ps step3](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step3.log)
+
+   Stats page :
+
+   ![stats_page_step3](./logs/task6/stats_step3.PNG)
+
+4. We stop the servers S1 and S3 : 
+
+   [Docker ps step4](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step4.log)
+
+   Stats page :
+
+   ![stats_page_step4](./logs/task6/stats_step4.PNG)
+
+   We have indeed a dynamic load balancer that can be used in a production environment with a great scalability.
+
+#### Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
+
+This solutions is pretty good, be we could improve it. Indeed, it is easy to launch new back end server but we still have to do it manually, we could imagine a way to launch automatically new node as soon as the traffic become higher and kill node when the traffic is lower and nobody has an active session on a particular node. For example amazon provide ways to create auto scaling groups that can be combined with load balancers. (https://aws.amazon.com/autoscaling/?nc1=h_ls)
+
+## Conclusion
+
+This lab allowed us to better understand the usage of docker, especially the notion of process supervisor and layers. We also learn the basic usage of Serf, a tool that allows node to communicate between each other. Eventually, this was a good way to discover an example of load balancing in a production environment.
