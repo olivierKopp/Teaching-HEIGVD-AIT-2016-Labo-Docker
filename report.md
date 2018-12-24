@@ -115,16 +115,16 @@ We can create a base image which contain every shared dependencies that our back
 
 #### Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
 
-- [Config after starting HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
-- [Config after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
-- [Config after starting S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
+- [Config after starting HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/configFiles/config_after_starting_HA.log)
+- [Config after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/configFiles/config_after_starting_S1.log)
+- [Config after starting S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/configFiles/config_after_starting_S2.log)
 
 #### In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.
 
-- [Docker ps logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
-- [Docker inspect HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
-- [Docker inspect S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
-- [Docker inspect S2 logs]()
+- [Docker ps logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/docker_ps_logs.log)
+- [Docker inspect HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/docker_inspect_HA_logs.log)
+- [Docker inspect S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/docker_inspect_S1_logs.log)
+- [Docker inspect S2 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task4/docker_inspect_S2_logs.log)
 
 #### Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
 
@@ -134,29 +134,29 @@ The file contains the name and ip of the last member that has joined the cluster
 
 #### Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected.
 
-- [Config after starting HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
-- [Config after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
-- [Config after starting S2]()
+- [Config after starting HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/configFiles/config_after_starting_HA.log)
+- [Config after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/configFiles/config_after_starting_S1.log)
+- [Config after starting S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/configFiles/config_after_starting_S2.log)
 
 #### In addition, provide a log file containing the output of the`docker ps` console and another file (per container) with`docker inspect <container>`. Four files are expected.
 
-- [Docker ps logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
-- [Docker inspect HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
-- [Docker inspect S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
-- [Docker inspect S2 logs]()
+- [Docker ps logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/docker_ps_logs.log)
+- [Docker inspect HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/docker_inspect_HA_logs.log)
+- [Docker inspect S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/docker_inspect_S1_logs.log)
+- [Docker inspect S2 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/docker_inspect_S2_logs.log)
 
 #### Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.
 
-[List of nodes with all container up](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+[List of nodes with all container up](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/list_of_nodes_with_HA_S1_S2.log)
 
 #### Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected.
 
-- [Config after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
-- [List of nodes after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+- [Config after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/configFiles/config_after_stopping_S2.log)
+- [List of nodes after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/list_of_nodes_after_stopping_S2.log)
 
 #### In addition, provide a log file containing the output of the `docker ps` console. One file expected.
 
-[Docker ps after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+[Docker ps after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task5/docker_ps__after_stopping_S2_logs.log)
 
 #### (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
