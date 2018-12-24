@@ -3,20 +3,20 @@
 ## Table of content 
 
 1. [Introduction](#Introduction)
-2. [Identify issues and install the tools](#Task-0-:-Identify-issues-and-install-the-tools)
-3. [Add a process supervisor to run several processes](#Task-1-:-Add-a-process-supervisor-to-run-several-processes)
-4. [Add a tool to manage membership in the web server cluster](#Task-2-:-Add-a-tool-to-manage-membership-in-the-web-server-cluster)
-5. [React to membership changes](#Task-3-:-React-to-membership-changes)
-6. [Use a template engine to easily generate configuration files](#Task-4-:-Use-a-template-engine-to-easily-generate-configuration-files)
-7. [Generate a new load balancer configuration when membership changes](#Task-5-:-Generate-a-new-load-balancer-configuration-when-membership-changes)
-8. [Make the load balancer automatically reload the new configuration](#Task-6-:-Make-the-load-balancer-automatically-reload-the-new-configuration)
+2. [Identify issues and install the tools](#Task-0)
+3. [Add a process supervisor to run several processes](#Task-1)
+4. [Add a tool to manage membership in the web server cluster](#Task-2)
+5. [React to membership changes](#Task-3)
+6. [Use a template engine to easily generate configuration files](#Task-4)
+7. [Generate a new load balancer configuration when membership changes](#Task-5)
+8. [Make the load balancer automatically reload the new configuration](#Task-6)
 9. [Conclusion](#Conclusion)
 
-## Introduction 
+## <a name="Introduction"></a>Introduction 
 
 In this lab, we will try to improve the infrastructure of the load balancer that we began in the last one. The main goal is to provide a way to add new servers more dynamically and to have a better resistance to crashes. We will use tools such as Docker, S6, and Serf.
 
-## Task 0 : Identify issues and install the tools 
+## <a name="Task-0"></a>Task 0 : Identify issues and install the tools 
 
 ### M1 : 
 
@@ -68,7 +68,7 @@ If we add other nodes, we will also have to add them in the haproxy configuratio
 
 repository at https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker.git
 
-## Task 1 : Add a process supervisor to run several processes
+## <a name="Task-1"></a>Task 1 : Add a process supervisor to run several processes
 
 Stats page at the end of the manipulations : 
 
@@ -78,7 +78,7 @@ We didn't have particular difficulties in this task.
 
 During this task, we modified the configuration of the docker images in order to install a process supervisor which will allow us to run multiple process within the same container easily. The process supervisor will help us to manage the processes inside the docker containers. For example, if a web application crashes, it can restart it for us.
 
-## Task 2 : Add a tool to manage membership in the web server cluster
+## <a name="Task-2"></a>Task 2 : Add a tool to manage membership in the web server cluster
 
 #### Provide the docker log output for each of the containers: `ha`,`s1` and `s2`. 
 
@@ -108,7 +108,7 @@ Serf uses an efficient [gossip protocol](https://www.serf.io/docs/internals/goss
 
 Other solutions can be ZooKeeper, doozerd or etcd, which uses a client/server architecture and required the usage of libraries to be used.
 
-## Task 3 : React to membership changes
+## <a name="Task-3"></a>Task 3 : React to membership changes
 
 #### Logs captured during the manipulation : 
 
@@ -118,7 +118,7 @@ Other solutions can be ZooKeeper, doozerd or etcd, which uses a client/server ar
 - [S2 logs with HA and S1 running](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S2_with_HA_and_S1_up.log)
 - [File serf.log in HaProxy](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/serf.log)
 
-## Task 4 : Use a template engine to easily generate configuration files
+## <a name="Task-4"></a>Task 4 : Use a template engine to easily generate configuration files
 
 #### You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Take a look at the Docker documentation on [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Tell us about the pros and cons to merge as much as possible of the command. In other words, compare:
 
@@ -162,7 +162,7 @@ We can create a base image which contain every shared dependencies that our back
 
 The file contains the name and ip of the last member that has joined the cluster. 
 
-## Task 5 : Generate a new load balancer configuration when membership changes
+## <a name="Task-5"></a>Task 5 : Generate a new load balancer configuration when membership changes
 
 #### Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected.
 
@@ -192,7 +192,7 @@ The file contains the name and ip of the last member that has joined the cluster
 
 #### (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
-## Task 6 : Make the load balancer automatically reload the new configuration
+## <a name="Task-6"></a>Task 6 : Make the load balancer automatically reload the new configuration
 
 #### Experimentation : 
 
@@ -234,6 +234,6 @@ The file contains the name and ip of the last member that has joined the cluster
 
 This solutions is pretty good, be we could improve it. Indeed, it is easy to launch new back end server but we still have to do it manually, we could imagine a way to launch automatically new node as soon as the traffic become higher and kill node when the traffic is lower and nobody has an active session on a particular node. For example amazon provide ways to create auto scaling groups that can be combined with load balancers. (https://aws.amazon.com/autoscaling/?nc1=h_ls)
 
-## Conclusion
+## <a name="Conclusion"></a>Conclusion
 
 This lab allowed us to better understand the usage of docker, especially the notion of process supervisor and layers. We also learn the basic usage of Serf, a tool that allows node to communicate between each other. Eventually, this was a good way to discover an example of load balancing in a production environment.
