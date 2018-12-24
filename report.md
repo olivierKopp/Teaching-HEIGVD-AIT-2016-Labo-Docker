@@ -4,7 +4,7 @@
 
 ### M1
 
-This infrastructure can't be deployed on production. The main reasons for this is that it' pretty weak against crashes. If on of the server crash and we have to relaunch it, we also have to relaunch the HAproxy which cause an indisponibility of the web app. The same process need to be done if we want to add another server.
+This infrastructure can't be deployed on production. The main reasons for this is that it' pretty weak against crashes. If one of the server crash and we have to relaunch it, we also have to relaunch the HAproxy which cause an indisponibility of the web app. The same process need to be done if we want to add another server.
 
 ### M2
 
@@ -20,9 +20,15 @@ A better approach would be to detect changes on runtime and to be able to add no
 
 ### M4
 
+It should be possible to add or remove the nodes dynamically, without knowing their names or addresses. One solutions is to create a cluster where all nodes communicate, which will allow the haproxy which node are actives at any times.
+
 ### M5
 
+The basic use of docker container doesn't allows the execution of multiple process, once the main process stops, the container is killed. What we need to achieve that is another abstract layer such as a process supervisor, which will always running and will launch and monitor other processes.
+
 ### M6
+
+If we add other nodes, we will also have to add them in the haproxy configuration file. This is not dynamic. A solution to this problem would be to run a script at each change in the network, which will do modification of the different configuration files.
 
 Stats page : 
 
@@ -42,19 +48,117 @@ During this task, we modified the configuration of the docker images in order to
 
 ## Task 2 : Add a tool to manage membership in the web server cluster
 
+#### Provide the docker log output for each of the containers: `ha`,`s1` and `s2`. 
+
+- [HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_HA.txt)
+- [S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S1.txt)
+- [S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S2.txt)
+
+
+
 #### Problem with the current solution : 
 
-TODO
+The current problem is that if one of the webapp failed to join the cluster, his agent startup will fail (it's the case if a webapp is launch before the haproxy). To prevent that, we can add the -retry-join option to the agent.
+
+The documentation show the usage of that option : 
+
+[`-retry-join`](https://www.serf.io/docs/agent/options.html#retry-join) - Address of another agent to join after starting up. This can be specified multiple times to specify multiple agents to join. If Serf is unable to join with any of the specified addresses, the agent will retry the join every `-retry-interval` up to `-retry-max` attempts. This can be used instead of `-join` to continue attempting to join the cluster.
 
 #### Give an explanation on how `Serf` is working. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
 
-TODO
+Serf is a tool for cluster membership, failure detection, and orchestration that is decentralized, fault-tolerant and highly available. It is extremely lightweight: it uses 5 to 10 MB of resident memory and primarily communicates using infrequent UDP messages.
+
+Serf uses an efficient [gossip protocol](https://www.serf.io/docs/internals/gossip.html) to solve three major problems:
+
+- **Membership**: Serf maintains cluster membership lists and is able to execute custom handler scripts when that membership changes.
+- **Failure detection and recovery**: Serf automatically detects failed nodes within seconds, notifies the rest of the cluster, and executes handler scripts allowing you to handle these events. Serf will attempt to recover failed nodes by reconnecting to them periodically.
+- **Custom event propagation**: Serf can broadcast custom events and queries to the cluster. These can be used to trigger deploys, propagate configuration, etc. Events are simply fire-and-forget broadcast, and Serf makes a best effort to deliver messages in the face of offline nodes or network partitions. Queries provide a simple realtime request/response mechanism.
+
+Other solutions can be ZooKeeper, doozerd or etcd, which uses a client/server architecture and required the usage of libraries to be used.
 
 ## Task 3 : React to membership changes
 
+#### Logs captured during the manipulation : 
+
+- [HA logs with only HA running](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+- [S1 logs with HA running](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+- [HA logs after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
+- [S2 logs with HA and S1 running](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S2_with_HA_and_S1_up.log)
+- [File serf.log in HaProxy](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/serf.log)
+
 ## Task 4 : Use a template engine to easily generate configuration files
 
+#### You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Take a look at the Docker documentation on [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Tell us about the pros and cons to merge as much as possible of the command. In other words, compare:
+
+```
+RUN command 1
+RUN command 2
+RUN command 3
+```
+
+#### vs.
+
+```
+RUN command 1 && command 2 && command 3
+```
+
+#### There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.
+
+Merging command allows us to create images with less layers (each line in the dockerfile will create a layer). This means that the performance of our image will be better if we merge command. On the other hand, docker use a cache to store the result of each command. This means that if we add a new line in the first architecture (the non merge one) the cache will improve the speed of building of the image, because every command that didn't change won't be executed. If we use the second architecture, the cache will be called only one time, so for each change in the line, every command will be executed, ignoring the cache.
+
+The goal of the squashing is to reduce the size and the number of the layers in a docker image without losing the benefit of the caching. src : http://jasonwilder.com/blog/2014/08/19/squashing-docker-images/
+
+The flattening is use on docker container instead of docker image, it aims to reduce the size of the container by deleting the history of it. src : https://tuhrig.de/flatten-a-docker-container-or-image/
+
+#### Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.
+We can create a base image which contain every shared dependencies that our backend and haproxy need (i.e : basic tools, serf, node...) and make the dockerfile of HA and servers inherit from it.
+
+#### Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
+
+- [Config after starting HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+- [Config after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+- [Config after starting S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
+
+#### In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.
+
+- [Docker ps logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+- [Docker inspect HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+- [Docker inspect S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
+- [Docker inspect S2 logs]()
+
+#### Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
+
+The file contains the name and ip of the last member that has joined the cluster. TODO problems.
+
 ## Task 5 : Generate a new load balancer configuration when membership changes
+
+#### Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected.
+
+- [Config after starting HA](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+- [Config after starting S1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+- [Config after starting S2]()
+
+#### In addition, provide a log file containing the output of the`docker ps` console and another file (per container) with`docker inspect <container>`. Four files are expected.
+
+- [Docker ps logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+- [Docker inspect HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+- [Docker inspect S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_HA_after_starting_S1.log)
+- [Docker inspect S2 logs]()
+
+#### Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.
+
+[List of nodes with all container up](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+
+#### Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected.
+
+- [Config after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+- [List of nodes after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_S1_with_HA_up.log)
+
+#### In addition, provide a log file containing the output of the `docker ps` console. One file expected.
+
+[Docker ps after stopping S2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task3/logs_only_HA.log)
+
+#### (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
 ## Task 6 : Make the load balancer automatically reload the new configuration
 
