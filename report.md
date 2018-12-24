@@ -82,9 +82,9 @@ During this task, we modified the configuration of the docker images in order to
 
 #### Provide the docker log output for each of the containers: `ha`,`s1` and `s2`. 
 
-- [HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_HA.txt)
-- [S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S1.txt)
-- [S2 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S2.txt)
+- [HA logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_HA.log)
+- [S1 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S1.log)
+- [S2 logs](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task2/logs_S2.log)
 
 
 
@@ -198,23 +198,21 @@ The file contains the name and ip of the last member that has joined the cluster
 
 1. We launch the HAProxy : 
 
-   [Docker ps step1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step1.log)
+   [Docker ps step1](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps_step1.log)
 
    Stats page :
 
    ![stats_page_step1](./logs/task6/stats_step1.PNG)
 
-2.  We launch two backend servers named S1 and S2 : 
+2. We launch two backend servers named S1 and S2 :
 
-   [Docker ps step2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step2.log)
+   [Docker ps step2](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps_step2.log)
 
-   Stats page :
-
-   ![stats_page_step2](./logs/task6/stats_step2.PNG)
+   Stats page :![stats_page_step2](./logs/task6/stats_step2.PNG)
 
 3. We launch three other server named S3, S4 and S5 : 
 
-   [Docker ps step3](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step3.log)
+   [Docker ps step3](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps_step3.log)
 
    Stats page :
 
@@ -222,7 +220,7 @@ The file contains the name and ip of the last member that has joined the cluster
 
 4. We stop the servers S1 and S3 : 
 
-   [Docker ps step4](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps__step4.log)
+   [Docker ps step4](https://github.com/olivierKopp/Teaching-HEIGVD-AIT-2016-Labo-Docker/blob/master/logs/task6/docker_ps_step4.log)
 
    Stats page :
 
