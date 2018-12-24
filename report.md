@@ -3,13 +3,13 @@
 ## Table of content 
 
 1. [Introduction](#Introduction)
-2. [Identify issues and install the tools](#Task 0 : Identify issues and install the tools)
-3. [Add a process supervisor to run several processes](#Task 1 : Add a process supervisor to run several processes)
-4. [Add a tool to manage membership in the web server cluster](#Task 2 : Add a tool to manage membership in the web server cluster)
-5. [React to membership changes](#Task 3 : React to membership changes)
-6. [Use a template engine to easily generate configuration files](#Task 4 : Use a template engine to easily generate configuration files)
-7. [Generate a new load balancer configuration when membership changes](#Task 5 : Generate a new load balancer configuration when membership changes)
-8. [Make the load balancer automatically reload the new configuration](#Task 6 : Make the load balancer automatically reload the new configuration)
+2. [Identify issues and install the tools](#Task-0-:-Identify-issues-and-install-the-tools)
+3. [Add a process supervisor to run several processes](#Task-1-:-Add-a-process-supervisor-to-run-several-processes)
+4. [Add a tool to manage membership in the web server cluster](#Task-2-:-Add-a-tool-to-manage-membership-in-the-web-server-cluster)
+5. [React to membership changes](#Task-3-:-React-to-membership-changes)
+6. [Use a template engine to easily generate configuration files](#Task-4-:-Use-a-template-engine-to-easily-generate-configuration-files)
+7. [Generate a new load balancer configuration when membership changes](#Task-5-:-Generate-a-new-load-balancer-configuration-when-membership-changes)
+8. [Make the load balancer automatically reload the new configuration](#Task-6-:-Make-the-load-balancer-automatically-reload-the-new-configuration)
 9. [Conclusion](#Conclusion)
 
 ## Introduction 
