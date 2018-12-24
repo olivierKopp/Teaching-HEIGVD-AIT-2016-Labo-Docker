@@ -1,0 +1,33 @@
+[s6-init] making user provided files available at /var/run/s6/etc...exited 0.
+[s6-init] ensuring user provided files have correct perms...exited 0.
+[fix-attrs.d] applying ownership & permissions fixes...
+[fix-attrs.d] done.
+[cont-init.d] executing container initialization scripts...
+[cont-init.d] done.
+[services.d] starting services
+[services.d] done.
+/opt/bin/serf agent --join ha --replay --event-handler member-join=/serf-handlers/member-join.sh --event-handler member-leave,member-failed=/serf-handlers/member-leave.sh --tag role=balancer
+==> Starting Serf agent...
+==> Starting Serf agent RPC...
+==> Serf agent running!
+         Node name: 'ff6e36c2250f'
+         Bind addr: '0.0.0.0:7946'
+          RPC addr: '127.0.0.1:7373'
+         Encrypted: false
+          Snapshot: false
+           Profile: lan
+==> Joining cluster...(replay: true)
+[WARNING] 357/151543 (173) : Server nodes/s1 is DOWN, reason: Layer4 connection problem, info: "Connection refused", check duration: 0ms. 1 active and 0 backup servers left. 0 sessions active, 0 requeued, 0 remaining in queue.
+    Join completed. Synced with 1 initial agents
+
+==> Log data will now stream in as it occurs:
+
+    2018/12/24 15:15:43 [INFO] agent: Serf agent starting
+    2018/12/24 15:15:43 [INFO] serf: EventMemberJoin: ff6e36c2250f 172.18.0.2
+    2018/12/24 15:15:43 [INFO] agent: joining: [ha] replay: true
+    2018/12/24 15:15:43 [INFO] agent: joined: 1 nodes
+    2018/12/24 15:15:44 [INFO] agent: Received event: member-join
+[WARNING] 357/151544 (173) : Server nodes/s2 is DOWN, reason: Layer4 connection problem, info: "Connection refused", check duration: 0ms. 0 active and 0 backup servers left. 0 sessions active, 0 requeued, 0 remaining in queue.
+[ALERT] 357/151544 (173) : backend 'nodes' has no server available!
+    2018/12/24 15:17:40 [INFO] serf: EventMemberJoin: 2008dcb26752 172.18.0.3
+    2018/12/24 15:17:41 [INFO] agent: Received event: member-join
